@@ -1,57 +1,58 @@
 type model = int
 
 type msg =
-  | Increment
-  | Decrement
-  | Reset
+  | Question
+  | Oui
+  | Non
   | LocationChanged of Tea_navigation.Location.t
-  | Set of int
 [@@deriving accessors]
 
 let msg_to_string (msg : msg) =
   match msg with
-  | Increment ->
-      "Inc"
-  | Decrement ->
-      "Dec"
-  | Reset ->
-      "Reset"
+  | Question ->
+      "Question"
+  | Oui ->
+      "Oui"
+  | Non ->
+      "Non"
   | LocationChanged _location ->
       "Location changed"
-  | Set i ->
-      "Set to " ^ string_of_int i
+
 
 let update model = function
-  | Increment ->
-      (model + 1, Tea.Cmd.none)
-  | Decrement ->
-      (model - 1, Tea.Cmd.none)
-  | Reset ->
-      (0, Tea.Cmd.none)
-  | Set v ->
-      (v, Tea.Cmd.none)
+  | Question ->
+      (0 , Tea.Cmd.none)
+  | Oui ->
+      (1, Tea.Cmd.none)
+  | Non ->
+      (2, Tea.Cmd.none)
   | LocationChanged _location ->
       (model, Tea.Cmd.none)
 
 let init () _location = (0, Tea.Cmd.none)
-
 let view_button button_text msg =
   let open Tea.Html in
   button [Events.onClick msg] [text button_text]
 
 let view model =
   let open Tea.Html in
+  let response =
+  match model with
+  |0 -> ""
+  |1 -> "Miaou"
+  |2 -> "Dommage, bon courage !"
+  | _ -> "Prends ton temps..."
+in
   div []
-    [ span [Attributes.style "text-weight" "bold"] [text (string_of_int model)]
+    [ span [Attributes.style "text-weight" "bold"] [text response]
     ; br []
-    ; view_button "Increment" Increment
+    ; span [Attributes.style "text-weight" "bold"] [text "Es-tu un chat ?"]
     ; br []
-    ; view_button "Decrement" Decrement
+    ; view_button "Oui" Oui
     ; br []
-    ; view_button "Set to 42" (Set 42)
+    ; view_button "Non" Non
     ; br []
-    ; (if model <> 0 then view_button "Reset" Reset else noNode) ]
-
+]
 let subscriptions _model = Tea.Sub.none
 
 let shutdown _model = Tea.Cmd.none
