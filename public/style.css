@@ -3,3 +3,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@theme {
+    --color-background-lavender: #CFCFEA;
+    --color-primary-plum: #63474D;
+    --color-secondary-tomato: #F15946;
+}

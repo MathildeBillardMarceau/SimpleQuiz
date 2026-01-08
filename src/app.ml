@@ -44,13 +44,13 @@ let view model =
   |2 -> "Dommage, bon courage !"
   | _ -> "Prends ton temps..."
 in
-  div [class' "h-screen bg-[#CFCFEA] m-auto flex flex-col justify-center"] 
-    [ span [class' "flex justify-center m-auto text-center"] [text "Es-tu un chat ?"]
+  div [class' "h-screen bg-background-lavender m-auto flex flex-col justify-center"] 
+    [ span [class' "flex justify-center m-auto text-center text-primary-plum"] [text "Es-tu un chat ?"]
     ; br []
-    ; span [class' "flex justify-center m-auto text-center p-5 border-1 rounded-xl"] [view_button "Oui" Oui]
-    ; span [class' "flex justify-center m-auto text-center p-5 border-1 rounded-xl"] [view_button "Non" Non]
+    ; span [class' "flex justify-center m-auto text-center bg-primary-plum text-background-lavender p-5 border-1 rounded-xl"] [view_button "Oui" Oui]
+    ; span [class' "flex justify-center m-auto text-center bg-primary-plum text-background-lavender p-5 border-1 rounded-xl"] [view_button "Non" Non]
     ; br []
-    ; span [class' "flex justify-center m-auto text-center"] [text response]
+    ; span [class' "flex justify-center m-auto text-center text-primary-plum"] [text response]
 ]
 let subscriptions _model = Tea.Sub.none
 
