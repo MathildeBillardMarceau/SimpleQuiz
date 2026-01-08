@@ -32,10 +32,11 @@ let update model = function
 let init () _location = (0, Tea.Cmd.none)
 let view_button button_text msg =
   let open Tea.Html in
-  button [Events.onClick msg] [text button_text]
+  button [Events.onClick msg]  [text button_text]
 
 let view model =
   let open Tea.Html in
+  let open Tea.Html.Attributes in
   let response =
   match model with
   |0 -> ""
@@ -43,15 +44,13 @@ let view model =
   |2 -> "Dommage, bon courage !"
   | _ -> "Prends ton temps..."
 in
-  div []
-    [ span [Attributes.style "text-weight" "bold"] [text response]
+  div [class' "h-screen bg-[#CFCFEA] m-auto flex flex-col justify-center"] 
+    [ span [class' "flex justify-center m-auto text-center"] [text "Es-tu un chat ?"]
     ; br []
-    ; span [Attributes.style "text-weight" "bold"] [text "Es-tu un chat ?"]
+    ; span [class' "flex justify-center m-auto text-center p-5 border-1 rounded-xl"] [view_button "Oui" Oui]
+    ; span [class' "flex justify-center m-auto text-center p-5 border-1 rounded-xl"] [view_button "Non" Non]
     ; br []
-    ; view_button "Oui" Oui
-    ; br []
-    ; view_button "Non" Non
-    ; br []
+    ; span [class' "flex justify-center m-auto text-center"] [text response]
 ]
 let subscriptions _model = Tea.Sub.none
 
