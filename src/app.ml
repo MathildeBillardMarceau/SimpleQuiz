@@ -1,16 +1,19 @@
 type model = int
 
 type msg =
-  | Question
-  | Oui
+  | FirstQuestion
+  | SecondQuestion
+  | Oui 
   | Non
   | LocationChanged of Tea_navigation.Location.t
 [@@deriving accessors]
 
 let msg_to_string (msg : msg) =
   match msg with
-  | Question ->
+  | FirstQuestion ->
       "Question"
+  | SecondQuestion ->
+      "Second Question"
   | Oui ->
       "Oui"
   | Non ->
@@ -20,19 +23,28 @@ let msg_to_string (msg : msg) =
 
 
 let update model = function
-  | Question ->
+  | FirstQuestion ->
       (0 , Tea.Cmd.none)
   | Oui ->
       (1, Tea.Cmd.none)
   | Non ->
       (2, Tea.Cmd.none)
+  | SecondQuestion ->
+      (0, Tea.Cmd.none)
   | LocationChanged _location ->
       (model, Tea.Cmd.none)
 
 let init () _location = (0, Tea.Cmd.none)
-let view_button button_text msg =
+let view_button model button_text msg =
   let open Tea.Html in
-  button [Events.onClick msg]  [text button_text]
+  let open Tea.Html.Attributes in
+  let isSelected =
+    match model with
+    | 1 -> "w-full text-xl text-center font-body text-primary-plum bg-background-lavender border-1 rounded-xl"
+    | 2 -> "w-full text-xl text-center font-body text-primary-plum bg-background-lavender border-1 rounded-xl"
+    | _ -> ""
+  in
+  button [Events.onClick msg; class' isSelected]  [text button_text]
 
 let view model =
   let open Tea.Html in
@@ -42,16 +54,25 @@ let view model =
   |0 -> ""
   |1 -> "Miaou"
   |2 -> "Dommage, bon courage !"
-  | _ -> "Prends ton temps..."
+  | _-> ""
+  (* |3 -> "à table ! la patée est servie." *)
 in
-  div [class' "h-screen bg-background-lavender m-auto flex flex-col justify-center"] 
-    [ span [class' "flex justify-center m-auto text-center text-primary-plum"] [text "Es-tu un chat ?"]
-    ; br []
-    ; span [class' "flex justify-center m-auto text-center bg-primary-plum text-background-lavender p-5 border-1 rounded-xl"] [view_button "Oui" Oui]
-    ; span [class' "flex justify-center m-auto text-center bg-primary-plum text-background-lavender p-5 border-1 rounded-xl"] [view_button "Non" Non]
-    ; br []
-    ; span [class' "flex justify-center m-auto text-center text-primary-plum"] [text response]
-]
+  div [class' "h-full bg-background-lavender m-auto"] 
+    [ 
+      div [class' "flex flex-col justify-center"] [ 
+        span [class' "p-20 text-4xl text-center text-primary-plum font-display font-bold"] [text "Es-tu un chat ?"]
+        ; img [src "/logo.png"; alt "cat"; class' "w-1/3 m-auto"] []
+        ; p  [] []
+        ];
+      div [class' "flex flex-row justify-center gap-10 "] [
+        span [class' " w-1/4 text-xl text-center font-body bg-primary-plum text-background-lavender border-1 rounded-xl"] [view_button model "Oui" Oui]
+      ; span [class' " w-1/4 text-xl text-center font-body bg-primary-plum text-background-lavender border-1 rounded-xl"] [view_button model "Non" Non]
+      ; p [] []
+      ];
+      div [class' "flex flex-col justify-center"] [
+     span [class' "p-10 text-4xl text-center text-primary-plum font-display"] [text response]
+      ]
+] 
 let subscriptions _model = Tea.Sub.none
 
 let shutdown _model = Tea.Cmd.none
