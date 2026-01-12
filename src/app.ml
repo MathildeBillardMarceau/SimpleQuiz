@@ -1,56 +1,91 @@
-type model = int
+type model = {is_a_cat: bool option}
 
 type msg =
-  | Increment
-  | Decrement
-  | Reset
+  | AnswerCat
+  | AnswerNotCat
   | LocationChanged of Tea_navigation.Location.t
-  | Set of int
 [@@deriving accessors]
 
-let msg_to_string (msg : msg) =
-  match msg with
-  | Increment ->
-      "Inc"
-  | Decrement ->
-      "Dec"
-  | Reset ->
-      "Reset"
+let msg_to_string (_msg : msg) = "foo"
+(* match msg with
+  | FirstQuestion ->
+      "Question"
+  | SecondQuestion ->
+      "Second Question"
+  | Oui ->
+      "Oui"
+  | Non ->
+      "Non"
   | LocationChanged _location ->
-      "Location changed"
-  | Set i ->
-      "Set to " ^ string_of_int i
+      "Location changed" *)
 
 let update model = function
-  | Increment ->
-      (model + 1, Tea.Cmd.none)
-  | Decrement ->
-      (model - 1, Tea.Cmd.none)
-  | Reset ->
-      (0, Tea.Cmd.none)
-  | Set v ->
-      (v, Tea.Cmd.none)
+  | AnswerCat ->
+      ({is_a_cat= Some true}, Tea.Cmd.none)
+  | AnswerNotCat ->
+      ({is_a_cat= Some false}, Tea.Cmd.none)
   | LocationChanged _location ->
       (model, Tea.Cmd.none)
 
-let init () _location = (0, Tea.Cmd.none)
+let init () _location = ({is_a_cat= None}, Tea.Cmd.none)
 
-let view_button button_text msg =
+let view_button ~selected button_text msg =
   let open Tea.Html in
-  button [Events.onClick msg] [text button_text]
+  (* let isSelected =
+    match model with
+    | 1 ->
+        "w-full text-xl text-center font-body text-primary-plum \
+         bg-background-lavender border-1 rounded-xl"
+    | 2 ->
+        "w-full text-xl text-center font-body text-primary-plum \
+         bg-background-lavender border-1 rounded-xl"
+    | _ ->
+        ""
+  in *)
+  let colors =
+    if selected then "text-primary-plum bg-background-lavender"
+    else "bg-primary-plum text-background-lavender"
+  in
+  let open Tea.Html.Attributes in
+  button
+    [ Events.onClick msg
+    ; class'
+        ("w-1/4 text-xl text-center font-body border-1 rounded-xl " ^ colors) ]
+    [text button_text]
+
+let answer_view model =
+  let open Tea.Html in
+  (* let open Tea.Html.Attributes in *)
+  match model.is_a_cat with
+  | None ->
+      div [] [text ""]
+  | Some true ->
+      div [] [text "Miaou"]
+  | Some false ->
+      div [] [text "Dommage, bon courage !"]
 
 let view model =
   let open Tea.Html in
-  div []
-    [ span [Attributes.style "text-weight" "bold"] [text (string_of_int model)]
-    ; br []
-    ; view_button "Increment" Increment
-    ; br []
-    ; view_button "Decrement" Decrement
-    ; br []
-    ; view_button "Set to 42" (Set 42)
-    ; br []
-    ; (if model <> 0 then view_button "Reset" Reset else noNode) ]
+  let open Tea.Html.Attributes in
+  div
+    [class' "h-full bg-background-lavender m-auto"]
+    [ div
+        [class' "flex flex-col justify-center"]
+        [ span
+            [ class'
+                "p-20 text-4xl text-center text-primary-plum font-display \
+                 font-bold" ]
+            [text "Es-tu un chat ?"]
+        ; img [src "/logo.png"; alt "cat"; class' "w-1/3 m-auto"] []
+        ; p [] [] ]
+    ; div
+        [class' "flex flex-row justify-center gap-10 "]
+        [ view_button ~selected:(model.is_a_cat = Some true) "Oui" AnswerCat
+        ; view_button ~selected:(model.is_a_cat = Some false) "Non" AnswerNotCat
+        ]
+    ; div
+        [class' "flex flex-col justify-center text-center p-20 text-4xl text-primary-plum font-bold"] [answer_view model]
+        ]
 
 let subscriptions _model = Tea.Sub.none
 
