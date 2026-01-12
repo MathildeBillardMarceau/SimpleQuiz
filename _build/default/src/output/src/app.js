@@ -108,51 +108,6 @@ function answer_view(model) {
   }
 }
 
-function manchas_view_question(model) {
-  const match = model.is_a_cat;
-  if (match !== undefined && match) {
-    return Tea_html.div(undefined, undefined, {
-      hd: Tea_html.Attributes.class$p("p-20 text-4xl text-center text-primary-plum font-display font-bold"),
-      tl: /* [] */ 0
-    }, {
-      hd: Tea_html.span(undefined, undefined, /* [] */ 0, {
-        hd: Tea_html.text("Es-tu Manchas ?"),
-        tl: /* [] */ 0
-      }),
-      tl: {
-        hd: Tea_html.img(undefined, undefined, {
-          hd: Tea_html.Attributes.src("/logo.png"),
-          tl: {
-            hd: Tea_html.Attributes.alt("cat"),
-            tl: {
-              hd: Tea_html.Attributes.class$p("w-1/3 m-auto"),
-              tl: /* [] */ 0
-            }
-          }
-        }, /* [] */ 0),
-        tl: {
-          hd: Tea_html.p(undefined, undefined, /* [] */ 0, /* [] */ 0),
-          tl: {
-            hd: Tea_html.div(undefined, undefined, {
-              hd: Tea_html.Attributes.class$p("flex flex-row justify-center gap-10 "),
-              tl: /* [] */ 0
-            }, {
-              hd: view_button(Caml_obj.caml_equal(model.is_manchas, true), "Oui", /* AnswerManchas */ 2),
-              tl: {
-                hd: view_button(Caml_obj.caml_equal(model.is_manchas, false), "Non", /* AnswerNotManchas */ 3),
-                tl: /* [] */ 0
-              }
-            }),
-            tl: /* [] */ 0
-          }
-        }
-      }
-    });
-  } else {
-    return Tea_html.div(undefined, undefined, /* [] */ 0, /* [] */ 0);
-  }
-}
-
 function answer_view_manchas(model) {
   const match = model.is_manchas;
   if (match !== undefined) {
@@ -172,6 +127,60 @@ function answer_view_manchas(model) {
       hd: Tea_html.text(""),
       tl: /* [] */ 0
     });
+  }
+}
+
+function manchas_view_question(model) {
+  const match = model.is_a_cat;
+  if (match !== undefined && match) {
+    return Tea_html.div(undefined, undefined, {
+      hd: Tea_html.Attributes.class$p("h-full bg-background-lavender m-auto"),
+      tl: /* [] */ 0
+    }, {
+      hd: Tea_html.div(undefined, undefined, {
+        hd: Tea_html.Attributes.class$p("flex flex-col justify-center"),
+        tl: /* [] */ 0
+      }, {
+        hd: Tea_html.span(undefined, undefined, {
+          hd: Tea_html.Attributes.class$p("p-20 text-4xl text-center text-primary-plum font-display font-bold"),
+          tl: /* [] */ 0
+        }, {
+          hd: Tea_html.text("Es-tu Manchas ?"),
+          tl: /* [] */ 0
+        }),
+        tl: {
+          hd: Tea_html.img(undefined, undefined, {
+            hd: Tea_html.Attributes.src("/logo.png"),
+            tl: {
+              hd: Tea_html.Attributes.alt("cat"),
+              tl: {
+                hd: Tea_html.Attributes.class$p("w-1/3 m-auto"),
+                tl: /* [] */ 0
+              }
+            }
+          }, /* [] */ 0),
+          tl: {
+            hd: Tea_html.p(undefined, undefined, /* [] */ 0, /* [] */ 0),
+            tl: /* [] */ 0
+          }
+        }
+      }),
+      tl: {
+        hd: Tea_html.div(undefined, undefined, {
+          hd: Tea_html.Attributes.class$p("flex flex-row justify-center gap-10 "),
+          tl: /* [] */ 0
+        }, {
+          hd: view_button(Caml_obj.caml_equal(model.is_manchas, true), "Oui", /* AnswerManchas */ 2),
+          tl: {
+            hd: view_button(Caml_obj.caml_equal(model.is_manchas, false), "Non", /* AnswerNotManchas */ 3),
+            tl: /* [] */ 0
+          }
+        }),
+        tl: /* [] */ 0
+      }
+    });
+  } else {
+    return Tea_html.div(undefined, undefined, /* [] */ 0, /* [] */ 0);
   }
 }
 
@@ -210,7 +219,13 @@ function view(model) {
       tl: {
         hd: manchas_view_question(model),
         tl: {
-          hd: answer_view_manchas(model),
+          hd: Tea_html.div(undefined, undefined, {
+            hd: Tea_html.Attributes.class$p("flex flex-col justify-center text-center p-20 text-4xl text-primary-plum font-bold"),
+            tl: /* [] */ 0
+          }, {
+            hd: answer_view_manchas(model),
+            tl: /* [] */ 0
+          }),
           tl: {
             hd: Tea_html.div(undefined, undefined, {
               hd: Tea_html.Attributes.class$p("flex flex-col justify-center text-center p-20 text-4xl text-primary-plum font-bold"),
@@ -302,8 +317,8 @@ export {
   init,
   view_button,
   answer_view,
-  manchas_view_question,
   answer_view_manchas,
+  manchas_view_question,
   view,
   subscriptions,
   shutdown,

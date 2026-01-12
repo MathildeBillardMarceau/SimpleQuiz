@@ -48,29 +48,6 @@ let answer_view model =
   | Some false ->
       div [] [text "Dommage, bon courage !"]
 
-let manchas_view_question model =
-  let open Tea.Html in
-  let open Tea.Html.Attributes in
-  match model.is_a_cat with
-  | Some true ->
-      div
-        [ class'
-            "p-20 text-4xl text-center text-primary-plum font-display \
-                 font-bold" ]
-        [ span [] [text "Es-tu Manchas ?"]
-        ; img [src "/logo.png"; alt "cat"; class' "w-1/3 m-auto"] []
-        ; p [] []
-        ; div
-            [class' "flex flex-row justify-center gap-10 "]
-            [ view_button
-                ~selected:(model.is_manchas = Some true)
-                "Oui" AnswerManchas
-            ; view_button
-                ~selected:(model.is_manchas = Some false)
-                "Non" AnswerNotManchas ] ]
-  | _ ->
-      div [] []
-
 let answer_view_manchas model =
   let open Tea.Html in
   (* let open Tea.Html.Attributes in *)
@@ -78,9 +55,36 @@ let answer_view_manchas model =
   | None ->
       div [] [text ""]
   | Some true ->
-    div [] [text "Le repas est servi !"]
+      div [] [text "Le repas est servi !"]
   | Some false ->
       div [] [text "Dommage, bon courage !"]
+
+let manchas_view_question model =
+  let open Tea.Html in
+  let open Tea.Html.Attributes in
+  match model.is_a_cat with
+  | Some true ->
+      div
+        [class' "h-full bg-background-lavender m-auto"]
+        [ div
+            [class' "flex flex-col justify-center"]
+            [ span
+                [ class'
+                    "p-20 text-4xl text-center text-primary-plum font-display \
+                     font-bold" ]
+                [text "Es-tu Manchas ?"]
+            ; img [src "/logo.png"; alt "cat"; class' "w-1/3 m-auto"] []
+            ; p [] [] ]
+            ; div
+                [class' "flex flex-row justify-center gap-10 "]
+                [ view_button
+                    ~selected:(model.is_manchas = Some true)
+                    "Oui" AnswerManchas
+                ; view_button
+                    ~selected:(model.is_manchas = Some false)
+                    "Non" AnswerNotManchas ] ] 
+  | _ ->
+      div [] []
 
 let view model =
   let open Tea.Html in
@@ -101,7 +105,11 @@ let view model =
         ; view_button ~selected:(model.is_a_cat = Some false) "Non" AnswerNotCat
         ]
     ; manchas_view_question model
-    ; answer_view_manchas model
+    ; div
+    [ class'
+            "flex flex-col justify-center text-center p-20 text-4xl \
+             text-primary-plum font-bold" ]
+        [answer_view_manchas model]
     ; div
         [ class'
             "flex flex-col justify-center text-center p-20 text-4xl \
