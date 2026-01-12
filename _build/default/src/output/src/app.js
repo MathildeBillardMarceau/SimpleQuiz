@@ -20,34 +20,53 @@ function msg_to_string(_msg) {
 }
 
 function update(model, param) {
-  if (/* tag */ typeof param === "number" || typeof param === "string") {
-    if (param === /* AnswerCat */ 0) {
-      return [
-        {
-          is_a_cat: true
-        },
-        Tea_cmd.none
-      ];
-    } else {
-      return [
-        {
-          is_a_cat: false
-        },
-        Tea_cmd.none
-      ];
-    }
-  } else {
+  if (!/* tag */ (typeof param === "number" || typeof param === "string")) {
     return [
       model,
       Tea_cmd.none
     ];
+  }
+  switch (param) {
+    case /* AnswerCat */ 0 :
+      return [
+        {
+          is_a_cat: true,
+          is_manchas: model.is_manchas
+        },
+        Tea_cmd.none
+      ];
+    case /* AnswerNotCat */ 1 :
+      return [
+        {
+          is_a_cat: false,
+          is_manchas: model.is_manchas
+        },
+        Tea_cmd.none
+      ];
+    case /* AnswerManchas */ 2 :
+      return [
+        {
+          is_a_cat: model.is_a_cat,
+          is_manchas: true
+        },
+        Tea_cmd.none
+      ];
+    case /* AnswerNotManchas */ 3 :
+      return [
+        {
+          is_a_cat: model.is_a_cat,
+          is_manchas: false
+        },
+        Tea_cmd.none
+      ];
   }
 }
 
 function init(param, _location) {
   return [
     {
-      is_a_cat: undefined
+      is_a_cat: undefined,
+      is_manchas: undefined
     },
     Tea_cmd.none
   ];
@@ -89,6 +108,82 @@ function answer_view(model) {
   }
 }
 
+function answer_view_manchas(model) {
+  const match = model.is_manchas;
+  if (match !== undefined) {
+    if (match) {
+      return Tea_html.div(undefined, undefined, /* [] */ 0, {
+        hd: Tea_html.text("Le repas est servi !"),
+        tl: /* [] */ 0
+      });
+    } else {
+      return Tea_html.div(undefined, undefined, /* [] */ 0, {
+        hd: Tea_html.text("Dommage, bon courage !"),
+        tl: /* [] */ 0
+      });
+    }
+  } else {
+    return Tea_html.div(undefined, undefined, /* [] */ 0, {
+      hd: Tea_html.text(""),
+      tl: /* [] */ 0
+    });
+  }
+}
+
+function manchas_view_question(model) {
+  const match = model.is_a_cat;
+  if (match !== undefined && match) {
+    return Tea_html.div(undefined, undefined, {
+      hd: Tea_html.Attributes.class$p("h-full bg-background-lavender m-auto"),
+      tl: /* [] */ 0
+    }, {
+      hd: Tea_html.div(undefined, undefined, {
+        hd: Tea_html.Attributes.class$p("flex flex-col justify-center"),
+        tl: /* [] */ 0
+      }, {
+        hd: Tea_html.span(undefined, undefined, {
+          hd: Tea_html.Attributes.class$p("p-20 text-4xl text-center text-primary-plum font-display font-bold"),
+          tl: /* [] */ 0
+        }, {
+          hd: Tea_html.text("Es-tu Manchas ?"),
+          tl: /* [] */ 0
+        }),
+        tl: {
+          hd: Tea_html.img(undefined, undefined, {
+            hd: Tea_html.Attributes.src("/logo.png"),
+            tl: {
+              hd: Tea_html.Attributes.alt("cat"),
+              tl: {
+                hd: Tea_html.Attributes.class$p("w-1/3 m-auto"),
+                tl: /* [] */ 0
+              }
+            }
+          }, /* [] */ 0),
+          tl: {
+            hd: Tea_html.p(undefined, undefined, /* [] */ 0, /* [] */ 0),
+            tl: /* [] */ 0
+          }
+        }
+      }),
+      tl: {
+        hd: Tea_html.div(undefined, undefined, {
+          hd: Tea_html.Attributes.class$p("flex flex-row justify-center gap-10 "),
+          tl: /* [] */ 0
+        }, {
+          hd: view_button(Caml_obj.caml_equal(model.is_manchas, true), "Oui", /* AnswerManchas */ 2),
+          tl: {
+            hd: view_button(Caml_obj.caml_equal(model.is_manchas, false), "Non", /* AnswerNotManchas */ 3),
+            tl: /* [] */ 0
+          }
+        }),
+        tl: /* [] */ 0
+      }
+    });
+  } else {
+    return Tea_html.div(undefined, undefined, /* [] */ 0, /* [] */ 0);
+  }
+}
+
 function view(model) {
   return Tea_html.div(undefined, undefined, {
     hd: Tea_html.Attributes.class$p("h-full bg-background-lavender m-auto"),
@@ -106,20 +201,8 @@ function view(model) {
         tl: /* [] */ 0
       }),
       tl: {
-        hd: Tea_html.img(undefined, undefined, {
-          hd: Tea_html.Attributes.src("/logo.png"),
-          tl: {
-            hd: Tea_html.Attributes.alt("cat"),
-            tl: {
-              hd: Tea_html.Attributes.class$p("w-1/3 m-auto"),
-              tl: /* [] */ 0
-            }
-          }
-        }, /* [] */ 0),
-        tl: {
-          hd: Tea_html.p(undefined, undefined, /* [] */ 0, /* [] */ 0),
-          tl: /* [] */ 0
-        }
+        hd: Tea_html.p(undefined, undefined, /* [] */ 0, /* [] */ 0),
+        tl: /* [] */ 0
       }
     }),
     tl: {
@@ -134,14 +217,26 @@ function view(model) {
         }
       }),
       tl: {
-        hd: Tea_html.div(undefined, undefined, {
-          hd: Tea_html.Attributes.class$p("flex flex-col justify-center text-center p-20 text-4xl text-primary-plum font-bold"),
-          tl: /* [] */ 0
-        }, {
-          hd: answer_view(model),
-          tl: /* [] */ 0
-        }),
-        tl: /* [] */ 0
+        hd: manchas_view_question(model),
+        tl: {
+          hd: Tea_html.div(undefined, undefined, {
+            hd: Tea_html.Attributes.class$p("flex flex-col justify-center text-center p-20 text-4xl text-primary-plum font-bold"),
+            tl: /* [] */ 0
+          }, {
+            hd: answer_view_manchas(model),
+            tl: /* [] */ 0
+          }),
+          tl: {
+            hd: Tea_html.div(undefined, undefined, {
+              hd: Tea_html.Attributes.class$p("flex flex-col justify-center text-center p-20 text-4xl text-primary-plum font-bold"),
+              tl: /* [] */ 0
+            }, {
+              hd: answer_view(model),
+              tl: /* [] */ 0
+            }),
+            tl: /* [] */ 0
+          }
+        }
       }
     }
   });
@@ -207,15 +302,23 @@ const answerCat = /* AnswerCat */ 0;
 
 const answerNotCat = /* AnswerNotCat */ 1;
 
+const answerManchas = /* AnswerManchas */ 2;
+
+const answerNotManchas = /* AnswerNotManchas */ 3;
+
 export {
   answerCat,
   answerNotCat,
+  answerManchas,
+  answerNotManchas,
   locationChanged,
   msg_to_string,
   update,
   init,
   view_button,
   answer_view,
+  answer_view_manchas,
+  manchas_view_question,
   view,
   subscriptions,
   shutdown,
