@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@theme {
+    --color-background-lavender: #CFCFEA;
+    --color-primary-plum: #63474D;
+
+    --font-display: 'Roboto', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
