@@ -1,15 +1,13 @@
-type model = int
+type model = {is_a_cat: bool option}
 
 type msg =
-  | FirstQuestion
-  | SecondQuestion
-  | Oui 
-  | Non
+  | AnswerCat
+  | AnswerNotCat
   | LocationChanged of Tea_navigation.Location.t
 [@@deriving accessors]
 
-let msg_to_string (msg : msg) =
-  match msg with
+let msg_to_string (_msg : msg) = "foo"
+(* match msg with
   | FirstQuestion ->
       "Question"
   | SecondQuestion ->
@@ -19,60 +17,76 @@ let msg_to_string (msg : msg) =
   | Non ->
       "Non"
   | LocationChanged _location ->
-      "Location changed"
-
+      "Location changed" *)
 
 let update model = function
-  | FirstQuestion ->
-      (0 , Tea.Cmd.none)
-  | Oui ->
-      (1, Tea.Cmd.none)
-  | Non ->
-      (2, Tea.Cmd.none)
-  | SecondQuestion ->
-      (0, Tea.Cmd.none)
+  | AnswerCat ->
+      ({is_a_cat= Some true}, Tea.Cmd.none)
+  | AnswerNotCat ->
+      ({is_a_cat= Some false}, Tea.Cmd.none)
   | LocationChanged _location ->
       (model, Tea.Cmd.none)
 
-let init () _location = (0, Tea.Cmd.none)
-let view_button model button_text msg =
+let init () _location = ({is_a_cat= None}, Tea.Cmd.none)
+
+let view_button ~selected button_text msg =
   let open Tea.Html in
-  let open Tea.Html.Attributes in
-  let isSelected =
+  (* let isSelected =
     match model with
-    | 1 -> "w-full text-xl text-center font-body text-primary-plum bg-background-lavender border-1 rounded-xl"
-    | 2 -> "w-full text-xl text-center font-body text-primary-plum bg-background-lavender border-1 rounded-xl"
-    | _ -> ""
+    | 1 ->
+        "w-full text-xl text-center font-body text-primary-plum \
+         bg-background-lavender border-1 rounded-xl"
+    | 2 ->
+        "w-full text-xl text-center font-body text-primary-plum \
+         bg-background-lavender border-1 rounded-xl"
+    | _ ->
+        ""
+  in *)
+  let colors =
+    if selected then "text-primary-plum bg-background-lavender"
+    else "bg-primary-plum text-background-lavender"
   in
-  button [Events.onClick msg; class' isSelected]  [text button_text]
+  let open Tea.Html.Attributes in
+  button
+    [ Events.onClick msg
+    ; class'
+        ("w-1/4 text-xl text-center font-body border-1 rounded-xl " ^ colors) ]
+    [text button_text]
+
+let answer_view model =
+  let open Tea.Html in
+  (* let open Tea.Html.Attributes in *)
+  match model.is_a_cat with
+  | None ->
+      div [] [text ""]
+  | Some true ->
+      div [] [text "Miaou"]
+  | Some false ->
+      div [] [text "Dommage, bon courage !"]
 
 let view model =
   let open Tea.Html in
   let open Tea.Html.Attributes in
-  let response =
-  match model with
-  |0 -> ""
-  |1 -> "Miaou"
-  |2 -> "Dommage, bon courage !"
-  | _-> ""
-  (* |3 -> "à table ! la patée est servie." *)
-in
-  div [class' "h-full bg-background-lavender m-auto"] 
-    [ 
-      div [class' "flex flex-col justify-center"] [ 
-        span [class' "p-20 text-4xl text-center text-primary-plum font-display font-bold"] [text "Es-tu un chat ?"]
+  div
+    [class' "h-full bg-background-lavender m-auto"]
+    [ div
+        [class' "flex flex-col justify-center"]
+        [ span
+            [ class'
+                "p-20 text-4xl text-center text-primary-plum font-display \
+                 font-bold" ]
+            [text "Es-tu un chat ?"]
         ; img [src "/logo.png"; alt "cat"; class' "w-1/3 m-auto"] []
-        ; p  [] []
-        ];
-      div [class' "flex flex-row justify-center gap-10 "] [
-        span [class' " w-1/4 text-xl text-center font-body bg-primary-plum text-background-lavender border-1 rounded-xl"] [view_button model "Oui" Oui]
-      ; span [class' " w-1/4 text-xl text-center font-body bg-primary-plum text-background-lavender border-1 rounded-xl"] [view_button model "Non" Non]
-      ; p [] []
-      ];
-      div [class' "flex flex-col justify-center"] [
-     span [class' "p-10 text-4xl text-center text-primary-plum font-display"] [text response]
-      ]
-] 
+        ; p [] [] ]
+    ; div
+        [class' "flex flex-row justify-center gap-10 "]
+        [ view_button ~selected:(model.is_a_cat = Some true) "Oui" AnswerCat
+        ; view_button ~selected:(model.is_a_cat = Some false) "Non" AnswerNotCat
+        ]
+    ; div
+        [class' "flex flex-col justify-center text-center p-20 text-4xl text-primary-plum font-bold"] [answer_view model]
+        ]
+
 let subscriptions _model = Tea.Sub.none
 
 let shutdown _model = Tea.Cmd.none
