@@ -109,9 +109,16 @@ function answer_view(model) {
 }
 
 function answer_view_manchas(model) {
-  const match = model.is_manchas;
-  if (match !== undefined) {
-    if (match) {
+  const match = model.is_a_cat;
+  if (match === undefined) {
+    return Tea_html.div(undefined, undefined, /* [] */ 0, /* [] */ 0);
+  }
+  if (!match) {
+    return Tea_html.div(undefined, undefined, /* [] */ 0, /* [] */ 0);
+  }
+  const match$1 = model.is_manchas;
+  if (match$1 !== undefined) {
+    if (match$1) {
       return Tea_html.div(undefined, undefined, /* [] */ 0, {
         hd: Tea_html.text("Le repas est servi !"),
         tl: /* [] */ 0
@@ -123,16 +130,15 @@ function answer_view_manchas(model) {
       });
     }
   } else {
-    return Tea_html.div(undefined, undefined, /* [] */ 0, {
-      hd: Tea_html.text(""),
-      tl: /* [] */ 0
-    });
+    return Tea_html.div(undefined, undefined, /* [] */ 0, /* [] */ 0);
   }
 }
 
 function manchas_view_question(model) {
-  const match = model.is_a_cat;
-  if (match !== undefined && match) {
+  const match = model.is_manchas;
+  if (match !== undefined) {
+    return Tea_html.div(undefined, undefined, /* [] */ 0, /* [] */ 0);
+  } else {
     return Tea_html.div(undefined, undefined, {
       hd: Tea_html.Attributes.class$p("h-full bg-background-lavender m-auto"),
       tl: /* [] */ 0
@@ -141,27 +147,33 @@ function manchas_view_question(model) {
         hd: Tea_html.Attributes.class$p("flex flex-col justify-center"),
         tl: /* [] */ 0
       }, {
-        hd: Tea_html.span(undefined, undefined, {
-          hd: Tea_html.Attributes.class$p("p-20 text-4xl text-center text-primary-plum font-display font-bold"),
+        hd: Tea_html.p(undefined, undefined, {
+          hd: Tea_html.Attributes.class$p("h-30"),
           tl: /* [] */ 0
-        }, {
-          hd: Tea_html.text("Es-tu Manchas ?"),
-          tl: /* [] */ 0
-        }),
+        }, /* [] */ 0),
         tl: {
-          hd: Tea_html.img(undefined, undefined, {
-            hd: Tea_html.Attributes.src("/logo.png"),
-            tl: {
-              hd: Tea_html.Attributes.alt("cat"),
-              tl: {
-                hd: Tea_html.Attributes.class$p("w-1/3 m-auto"),
-                tl: /* [] */ 0
-              }
-            }
-          }, /* [] */ 0),
-          tl: {
-            hd: Tea_html.p(undefined, undefined, /* [] */ 0, /* [] */ 0),
+          hd: Tea_html.span(undefined, undefined, {
+            hd: Tea_html.Attributes.class$p("p-20 text-4xl text-center text-primary-plum font-display font-bold"),
             tl: /* [] */ 0
+          }, {
+            hd: Tea_html.text("Es-tu Manchas ?"),
+            tl: /* [] */ 0
+          }),
+          tl: {
+            hd: Tea_html.img(undefined, undefined, {
+              hd: Tea_html.Attributes.src("/logo.png"),
+              tl: {
+                hd: Tea_html.Attributes.alt("cat"),
+                tl: {
+                  hd: Tea_html.Attributes.class$p("w-1/3 m-auto"),
+                  tl: /* [] */ 0
+                }
+              }
+            }, /* [] */ 0),
+            tl: {
+              hd: Tea_html.p(undefined, undefined, /* [] */ 0, /* [] */ 0),
+              tl: /* [] */ 0
+            }
           }
         }
       }),
@@ -179,51 +191,69 @@ function manchas_view_question(model) {
         tl: /* [] */ 0
       }
     });
-  } else {
+  }
+}
+
+function cat_view_question(model) {
+  const match = model.is_a_cat;
+  if (match !== undefined) {
     return Tea_html.div(undefined, undefined, /* [] */ 0, /* [] */ 0);
+  } else {
+    return Tea_html.div(undefined, undefined, {
+      hd: Tea_html.Attributes.class$p("h-full bg-background-lavender m-auto"),
+      tl: /* [] */ 0
+    }, {
+      hd: Tea_html.div(undefined, undefined, {
+        hd: Tea_html.Attributes.class$p("flex flex-col justify-center"),
+        tl: /* [] */ 0
+      }, {
+        hd: Tea_html.p(undefined, undefined, {
+          hd: Tea_html.Attributes.class$p("h-30"),
+          tl: /* [] */ 0
+        }, /* [] */ 0),
+        tl: {
+          hd: Tea_html.span(undefined, undefined, {
+            hd: Tea_html.Attributes.class$p("p-20 text-4xl text-center text-primary-plum font-display font-bold"),
+            tl: /* [] */ 0
+          }, {
+            hd: Tea_html.text("Es-tu un chat ?"),
+            tl: /* [] */ 0
+          }),
+          tl: {
+            hd: Tea_html.p(undefined, undefined, /* [] */ 0, /* [] */ 0),
+            tl: /* [] */ 0
+          }
+        }
+      }),
+      tl: {
+        hd: Tea_html.div(undefined, undefined, {
+          hd: Tea_html.Attributes.class$p("flex flex-row justify-center gap-10 "),
+          tl: /* [] */ 0
+        }, {
+          hd: view_button(Caml_obj.caml_equal(model.is_a_cat, true), "Oui", /* AnswerCat */ 0),
+          tl: {
+            hd: view_button(Caml_obj.caml_equal(model.is_a_cat, false), "Non", /* AnswerNotCat */ 1),
+            tl: /* [] */ 0
+          }
+        }),
+        tl: /* [] */ 0
+      }
+    });
   }
 }
 
 function view(model) {
-  return Tea_html.div(undefined, undefined, {
-    hd: Tea_html.Attributes.class$p("h-full bg-background-lavender m-auto"),
-    tl: /* [] */ 0
-  }, {
-    hd: Tea_html.div(undefined, undefined, {
-      hd: Tea_html.Attributes.class$p("flex flex-col justify-center"),
-      tl: /* [] */ 0
-    }, {
-      hd: Tea_html.span(undefined, undefined, {
-        hd: Tea_html.Attributes.class$p("p-20 text-4xl text-center text-primary-plum font-display font-bold"),
-        tl: /* [] */ 0
-      }, {
-        hd: Tea_html.text("Es-tu un chat ?"),
-        tl: /* [] */ 0
-      }),
-      tl: {
-        hd: Tea_html.p(undefined, undefined, /* [] */ 0, /* [] */ 0),
-        tl: /* [] */ 0
-      }
-    }),
-    tl: {
-      hd: Tea_html.div(undefined, undefined, {
-        hd: Tea_html.Attributes.class$p("flex flex-row justify-center gap-10 "),
-        tl: /* [] */ 0
-      }, {
-        hd: view_button(Caml_obj.caml_equal(model.is_a_cat, true), "Oui", /* AnswerCat */ 0),
-        tl: {
-          hd: view_button(Caml_obj.caml_equal(model.is_a_cat, false), "Non", /* AnswerNotCat */ 1),
-          tl: /* [] */ 0
-        }
-      }),
-      tl: {
-        hd: manchas_view_question(model),
-        tl: {
+  const match = model.is_a_cat;
+  let tmp;
+  if (match !== undefined) {
+    if (match) {
+      const match$1 = model.is_manchas;
+      tmp = match$1 !== undefined ? Tea_html.div(undefined, undefined, /* [] */ 0, {
           hd: Tea_html.div(undefined, undefined, {
             hd: Tea_html.Attributes.class$p("flex flex-col justify-center text-center p-20 text-4xl text-primary-plum font-bold"),
             tl: /* [] */ 0
           }, {
-            hd: answer_view_manchas(model),
+            hd: answer_view(model),
             tl: /* [] */ 0
           }),
           tl: {
@@ -231,14 +261,42 @@ function view(model) {
               hd: Tea_html.Attributes.class$p("flex flex-col justify-center text-center p-20 text-4xl text-primary-plum font-bold"),
               tl: /* [] */ 0
             }, {
-              hd: answer_view(model),
+              hd: answer_view_manchas(model),
               tl: /* [] */ 0
             }),
             tl: /* [] */ 0
           }
+        }) : manchas_view_question(model);
+    } else {
+      tmp = Tea_html.div(undefined, undefined, {
+        hd: Tea_html.Attributes.class$p("flex justify-center "),
+        tl: /* [] */ 0
+      }, {
+        hd: Tea_html.p(undefined, undefined, {
+          hd: Tea_html.Attributes.class$p("h-100"),
+          tl: /* [] */ 0
+        }, /* [] */ 0),
+        tl: {
+          hd: Tea_html.div(undefined, undefined, {
+            hd: Tea_html.Attributes.class$p("flex flex-col justify-center self-center text-center p-20 text-4xl text-primary-plum font-bold"),
+            tl: /* [] */ 0
+          }, {
+            hd: answer_view(model),
+            tl: /* [] */ 0
+          }),
+          tl: /* [] */ 0
         }
-      }
+      });
     }
+  } else {
+    tmp = cat_view_question(model);
+  }
+  return Tea_html.div(undefined, undefined, {
+    hd: Tea_html.Attributes.class$p("h-screen bg-background-lavender"),
+    tl: /* [] */ 0
+  }, {
+    hd: tmp,
+    tl: /* [] */ 0
   });
 }
 
@@ -319,6 +377,7 @@ export {
   answer_view,
   answer_view_manchas,
   manchas_view_question,
+  cat_view_question,
   view,
   subscriptions,
   shutdown,
